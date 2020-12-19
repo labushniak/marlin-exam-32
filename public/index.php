@@ -9,7 +9,9 @@ $templates = new League\Plates\Engine('../app/views');
 
 
 $dispatcher = FastRoute\simpleDispatcher (function(FastRoute\RouteCollector $r) {
-    $r->addRoute('GET', '/login', ['App\LoginController', 'printLogin', 'homepage']);
+    $r->addRoute('GET', '/registration', ['App\LoginController', 'printLogin', 'registration']);
+    $r->addRoute('GET', '/login', ['App\LoginController', 'printLogin', 'login']);
+    $r->addRoute('POST', '/login', ['App\LoginController', 'printLogin', 'login']);
     $r->addRoute('GET', '/login/{id:\d+}', ['App\LoginController', 'printLogin', 'homepage']);
     $r->addRoute('GET', '/about', ['App\LoginController', 'printLogin', 'about']);
     $r->addRoute('GET', '/about/{id:\d+}', ['App\LoginController', 'printLogin', 'about']);
@@ -45,9 +47,13 @@ switch ($routeInfo[0]) {
         $controller = new $handler[0];
         call_user_func([$controller, $handler[1]], $vars);
         
+        //PHP-DI
+        //$containerBuilder = new DI\Container();
+        //$container = $containerBuilder->call($routeInfo[1], $routeInfo[2]);
+        //d($container);
         //подключаем
         echo $templates->render($handler[2], ['name' => $var['id']]);
-        d($vars);
+        
         // ... call $handler with $vars
         break;
 }

@@ -4,7 +4,7 @@ namespace App;
 class LoginController
 {
     
-    public function printLogin()
+    public function printLogin($vars)
     {
         //echo "123";
         return true;

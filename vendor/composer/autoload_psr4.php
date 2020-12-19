@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Valitron\\' => array($vendorDir . '/vlucas/valitron/src/Valitron'),
     'Tamtamchik\\SimpleFlash\\' => array($vendorDir . '/tamtamchik/simple-flash/src'),
     'Psr\\Container\\' => array($vendorDir . '/psr/container/src'),
     'PhpDocReader\\' => array($vendorDir . '/php-di/phpdoc-reader/src/PhpDocReader'),
