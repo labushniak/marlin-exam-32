@@ -57,10 +57,10 @@
                                     <div class="alert alert-danger text-dark" role="alert">
                                         <strong>Уведомление!</strong> Этот эл. адрес уже занят другим пользователем.
                                     </div>
-                                    <form id="js-login" novalidate="" action="" method="POST">
+                                    <form id="js-login" novalidate="" action="/registration" method="POST">
                                         <div class="form-group">
                                             <label class="form-label" for="emailverify">Email</label>
-                                            <input type="email" id="emailverify" class="form-control" placeholder="Эл. адрес" name="email" required>
+                                            <input type="email" id="emailverify" class="form-control" placeholder="Эл. адрес" name="email" value="" required>
                                             <div class="invalid-feedback">Заполните поле.</div>
                                             <div class="help-block">Эл. адрес будет вашим логином при авторизации</div>
                                         </div>
@@ -75,10 +75,9 @@
                                             <input type="password" id="userpassword" class="form-control" placeholder="" name="password_again" required>
                                             <div class="invalid-feedback">Заполните поле.</div>
                                         </div>
-                                       <input type="hidden" name="token" value="" />
                                         <div class="row no-gutters">
                                             <div class="col-md-4 ml-auto text-right">
-                                                <button id="js-login-btn" type="submit" class="btn btn-block btn-danger btn-lg mt-3" name="submit" value ="submit ">Регистрация</button>
+                                                <button id="js-login-btn" type="submit" class="btn btn-block btn-danger btn-lg mt-3" name="submit" value ="submit">Регистрация</button>
                                             </div>
                                         </div>
                                     </form>

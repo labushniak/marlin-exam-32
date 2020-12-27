@@ -1,15 +1,38 @@
 <?php
 require_once "../vendor/autoload.php";
 
-use App\LoginController;
+use Delight\Auth\Auth;
+use DI\ContainerBuilder;
+use League\Plates\Engine;
 
-// Create new Plates instance
-$templates = new League\Plates\Engine('../app/views');
+$builder = new ContainerBuilder;
+$builder->addDefinitions([
 
+    Engine::class => function(){
+        return new Engine('../app/views');
+    },
 
+    PDO::class => function(){
+        $driver = "mysql";
+        $host = "127.0.0.1";
+        $db_name = "marlin_users";
+        $user_name = "root";
+        $password = "root";
+
+        return new PDO("mysql:host=127.0.0.1;dbname=marlin_users", "root", "root");
+    },
+
+    Auth::class => function() {
+        return new Auth ($builder->get('PDO'));
+    }
+
+]);
+
+$containerDI = $builder->build();
 
 $dispatcher = FastRoute\simpleDispatcher (function(FastRoute\RouteCollector $r) {
-    $r->addRoute('GET', '/registration', ['App\LoginController', 'printLogin', 'registration']);
+    $r->addRoute('GET', '/registration', ['App\Registration', 'index']);
+    $r->addRoute('POST', '/registration', ['App\Registration', 'validate', 'registration']);
     $r->addRoute('GET', '/login', ['App\LoginController', 'printLogin', 'login']);
     $r->addRoute('POST', '/login', ['App\LoginController', 'printLogin', 'login']);
     $r->addRoute('GET', '/login/{id:\d+}', ['App\LoginController', 'printLogin', 'homepage']);
@@ -44,17 +67,7 @@ switch ($routeInfo[0]) {
     case FastRoute\Dispatcher::FOUND:
         $handler = $routeInfo[1];
         $vars = $routeInfo[2];
-        $controller = new $handler[0];
-        call_user_func([$controller, $handler[1]], $vars);
-        
-        //PHP-DI
-        //$containerBuilder = new DI\Container();
-        //$container = $containerBuilder->call($routeInfo[1], $routeInfo[2]);
-        //d($container);
-        //подключаем
-        echo $templates->render($handler[2], ['name' => $var['id']]);
-        
-        // ... call $handler with $vars
+        $containerDI->call($handler, $vars);
         break;
 }
 
