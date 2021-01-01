@@ -9,25 +9,23 @@
             </a>
         </div>
         <div class="card p-4 border-top-left-radius-0 border-top-right-radius-0">
-            <div class="alert alert-success">
-                Регистрация успешна
-            </div>
-            <form action="">
+            <?= $flash ?>
+            <form action="" method="POST">
                 <div class="form-group">
                     <label class="form-label" for="username">Email</label>
-                    <input type="email" id="username" class="form-control" placeholder="Эл. адрес" value="">
+                    <input type="email" id="username" class="form-control" placeholder="Эл. адрес" value="" name="email">
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="password">Пароль</label>
-                    <input type="password" id="password" class="form-control" placeholder="" >
+                    <input type="password" id="password" class="form-control" placeholder="" name="password">
                 </div>
                 <div class="form-group text-left">
                     <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" id="rememberme">
-                        <label class="custom-control-label" for="rememberme">Запомнить меня</label>
+                        <input type="checkbox" class="custom-control-input" id="rememberme" name="remember">
+                        <label class="custom-control-label" for="rememberme" >Запомнить меня</label>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-default float-right">Войти</button>
+                <button type="submit" class="btn btn-default float-right" name="submit" value="submit">Войти</button>
             </form>
         </div>
         <div class="blankpage-footer text-center">

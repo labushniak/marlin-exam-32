@@ -4,19 +4,17 @@ namespace App;
 use League\Plates\Engine;
 use Delight\Auth\Auth;
 use \Tamtamchik\SimpleFlash\Flash;
-use \App\Session;
+
 
 
 class Registration
 {
-    private $templates, $auth, $flash, $SiteParams;
+    private $templates, $auth, $flash;
     public function __construct(Engine $engine, Auth $auth, Flash $flash, Session $session)
     {
         $this->templates = $engine;
         $this->auth = $auth;
-        $this->flash = $flash;
-        $this->session = $session;
-        
+        $this->flash = $flash;        
     }
 
     
