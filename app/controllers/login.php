@@ -18,8 +18,11 @@ class Login
     
     public function index ()
     {
+        
+
         if($_POST['submit']){
-            if ($_POST['remember'] == 1) {
+            
+            if ($_POST['remember'] == "on") {
                 // keep logged in for one year
                 $rememberDuration = (int) (60 * 60 * 24 * 365.25);
             }
@@ -33,6 +36,7 @@ class Login
                 $this->auth->login($_POST['email'], $_POST['password'], $rememberDuration);
             
                 $this->flash->success('User is logged in');
+                
                 header('Location: /');
             }
             catch (\Delight\Auth\InvalidEmailException $e) {
