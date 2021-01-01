@@ -1,30 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>
-        Регистрация
-    </title>
-    <meta name="description" content="Login">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, minimal-ui">
-    <!-- Call App Mode on ios devices -->
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <!-- Remove Tap Highlight on Windows Phone IE -->
-    <meta name="msapplication-tap-highlight" content="no">
-    <!-- base css -->
-    <link id="vendorsbundle" rel="stylesheet" media="screen, print" href="css/vendors.bundle.css">
-    <link id="appbundle" rel="stylesheet" media="screen, print" href="css/app.bundle.css">
-    <link id="mytheme" rel="stylesheet" media="screen, print" href="#">
-    <link id="myskin" rel="stylesheet" media="screen, print" href="css/skins/skin-master.css">
-    <!-- Place favicon.ico in the root directory -->
-    <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png">
-    <link rel="mask-icon" href="img/favicon/safari-pinned-tab.svg" color="#5bbad5">
-    <link rel="stylesheet" media="screen, print" href="css/fa-brands.css">
-</head>
-<body>
-    <div class="page-wrapper auth">
+<?php $this->layout('layout', ['title' => 'Registration']) ?>
+<div class="page-wrapper auth">
         <div class="page-inner bg-brand-gradient">
             <div class="page-content-wrapper bg-transparent m-0">
                 <div class="height-10 w-100 shadow-lg px-4 bg-brand-gradient">
@@ -54,9 +29,7 @@
                             </div>
                             <div class="col-xl-6 ml-auto mr-auto">
                                 <div class="card p-4 rounded-plus bg-faded">
-                                    <div class="alert alert-danger text-dark" role="alert">
-                                        <strong>Уведомление!</strong> Этот эл. адрес уже занят другим пользователем.
-                                    </div>
+                                <?= $flash ?>
                                     <form id="js-login" novalidate="" action="/registration" method="POST">
                                         <div class="form-group">
                                             <label class="form-label" for="emailverify">Email</label>
@@ -67,12 +40,6 @@
                                         <div class="form-group">
                                             <label class="form-label" for="userpassword">Пароль <br></label>
                                             <input type="password" id="userpassword" class="form-control" placeholder="" name="password" required >
-                                            <div class="invalid-feedback">Заполните поле.</div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="form-label" for="userpassword">Повторите пароль <br></label>
-                                            <input type="password" id="userpassword" class="form-control" placeholder="" name="password_again" required>
                                             <div class="invalid-feedback">Заполните поле.</div>
                                         </div>
                                         <div class="row no-gutters">
@@ -86,7 +53,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+                </div>
         </div>
     </div>
     
@@ -109,5 +76,3 @@
         });
 
     </script>
-</body>
-</html>

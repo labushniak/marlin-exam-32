@@ -1,29 +1,29 @@
 <?php
+if( !session_id() ) @session_start();
 require_once "../vendor/autoload.php";
 
 use Delight\Auth\Auth;
 use DI\ContainerBuilder;
 use League\Plates\Engine;
+use Aura\SqlQuery\QueryFactory;
 
-$builder = new ContainerBuilder;
+$builder = new ContainerBuilder();
 $builder->addDefinitions([
 
     Engine::class => function(){
         return new Engine('../app/views');
     },
 
-    PDO::class => function(){
-        $driver = "mysql";
-        $host = "127.0.0.1";
-        $db_name = "marlin_users";
-        $user_name = "root";
-        $password = "root";
-
-        return new PDO("mysql:host=127.0.0.1;dbname=marlin_users", "root", "root");
+    QueryFactory::class => function(){
+        return new QueryFactory('mysql');
     },
 
-    Auth::class => function() {
-        return new Auth ($builder->get('PDO'));
+    PDO::class => function(){
+        return new PDO("mysql:host=127.0.0.1;dbname=level_32", "root", "root");
+    },
+
+    Auth::class => function($builder) {
+        return new Auth ($builder->get("PDO"));
     }
 
 ]);
@@ -32,9 +32,14 @@ $containerDI = $builder->build();
 
 $dispatcher = FastRoute\simpleDispatcher (function(FastRoute\RouteCollector $r) {
     $r->addRoute('GET', '/registration', ['App\Registration', 'index']);
-    $r->addRoute('POST', '/registration', ['App\Registration', 'validate', 'registration']);
-    $r->addRoute('GET', '/login', ['App\LoginController', 'printLogin', 'login']);
-    $r->addRoute('POST', '/login', ['App\LoginController', 'printLogin', 'login']);
+    $r->addRoute('POST', '/registration', ['App\Registration', 'index']);
+
+    $r->addRoute('GET', '/login', ['App\Login', 'index']);
+    $r->addRoute('POST', '/login', ['App\Login', 'index']);
+
+    $r->addRoute('GET', '/', ['App\Users', 'index']);
+    $r->addRoute('POST', '/', ['App\Users', 'index']);
+    
     $r->addRoute('GET', '/login/{id:\d+}', ['App\LoginController', 'printLogin', 'homepage']);
     $r->addRoute('GET', '/about', ['App\LoginController', 'printLogin', 'about']);
     $r->addRoute('GET', '/about/{id:\d+}', ['App\LoginController', 'printLogin', 'about']);
@@ -70,18 +75,3 @@ switch ($routeInfo[0]) {
         $containerDI->call($handler, $vars);
         break;
 }
-
-
-
-
-/*
-if ($_SERVER['REQUEST_URI'] == "/"){
-    echo $templates->render('homepage', ['name' => 'Stas']);
-} elseif ($_SERVER['REQUEST_URI'] == "/about") {
-    echo $templates->render('about');
-}
-*/
-
-
-
-
