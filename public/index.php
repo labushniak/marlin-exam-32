@@ -7,6 +7,7 @@ use DI\ContainerBuilder;
 use League\Plates\Engine;
 use Aura\SqlQuery\QueryFactory;
 
+
 $builder = new ContainerBuilder();
 $builder->addDefinitions([
 
@@ -45,6 +46,15 @@ $dispatcher = FastRoute\simpleDispatcher (function(FastRoute\RouteCollector $r) 
     $r->addRoute('GET', '/create', ['App\Controllers\Users', 'create']);
     $r->addRoute('POST', '/create', ['App\Controllers\Users', 'create']);
 
+    $r->addRoute('GET', '/edit/{id:\d+}', ['App\Controllers\Users', 'edit']);
+    $r->addRoute('POST', '/edit/{id:\d+}', ['App\Controllers\Users', 'edit']);
+
+    $r->addRoute('GET', '/security/{id:\d+}', ['App\Controllers\Users', 'security']);
+    $r->addRoute('POST', '/security/{id:\d+}', ['App\Controllers\Users', 'security']);
+
+    $r->addRoute('GET', '/status/{id:\d+}', ['App\Controllers\Users', 'status']);
+    $r->addRoute('POST', '/status/{id:\d+}', ['App\Controllers\Users', 'status']);
+
     $r->addRoute('GET', '/login/{id:\d+}', ['App\LoginController', 'printLogin', 'homepage']);
     $r->addRoute('GET', '/about', ['App\LoginController', 'printLogin', 'about']);
     $r->addRoute('GET', '/about/{id:\d+}', ['App\LoginController', 'printLogin', 'about']);
@@ -53,7 +63,6 @@ $dispatcher = FastRoute\simpleDispatcher (function(FastRoute\RouteCollector $r) 
     // The /{title} suffix is optional
     $r->addRoute('GET', '/articles/{id:\d+}[/{title}]', 'get_article_handler');
 });
-
 
 // Fetch method and URI from somewhere
 $httpMethod = $_SERVER['REQUEST_METHOD'];

@@ -16,6 +16,7 @@ class Users
         $this->auth = $auth;
         $this->flash = $flash;
         $this->user = $user;
+        
     }
     
     public function index()
@@ -63,7 +64,6 @@ class Users
         }else {
             
             try {
-                
                 
                 $userId = $this->auth->register($_POST['email'], $_POST['password']);
                 
@@ -125,15 +125,50 @@ class Users
                 $this->flash->warning('Too many requests');
             }
         
-        
-        
+            echo $this->templates->render('create', ['flash' => $this->flash->display(), 'auth' => $this->auth, 'name' => $_POST['name'], 'job_title' => $_POST['job_title'], 'phone' => $_POST['phone'], 'address' => $_POST['address'], 'status' => $_POST['status'], 'vk' => $_POST['vk'], 'telegram' => $_POST['telegram'], 'instagram' => $_POST['instagram'], 'email' => $_POST['email']]);
         }
-
-        echo $this->templates->render('create', ['flash' => $this->flash->display(), 'auth' => $this->auth, 'name' => $_POST['name'], 'job_title' => $_POST['job_title'], 'phone' => $_POST['phone'], 'address' => $_POST['address'], 'status' => $_POST['status'], 'vk' => $_POST['vk'], 'telegram' => $_POST['telegram'], 'instagram' => $_POST['instagram'], 'email' => $_POST['email']]);
-
-
     }
 
+    public function edit($id)
+    {
 
+        if($_POST['submit']){
+            $this->user->editInfo($id);
+        }
+        
+        $userInfo = $this->user->getOne($id);
+        echo $this->templates->render('edit', ['auth' => $this->auth, 'user' => $userInfo]);
+    }
+
+    public function security($id)
+    {
+        $userInfo = $this->user->getEmail($id);
+
+        if($_POST['submit']){
+            try {
+                $this->auth->changePassword($_POST['oldPassword'], $_POST['newPassword']);
+            
+                $this->flash->success('Password has been changed');
+            }
+            catch (\Delight\Auth\NotLoggedInException $e) {
+                $this->flash->warning('Not logged in');
+            }
+            catch (\Delight\Auth\InvalidPasswordException $e) {
+                $this->flash->warning('Invalid password(s)');
+            }
+            catch (\Delight\Auth\TooManyRequestsException $e) {
+                $this->flash->warning('Too many requests');
+            }
+        }
+                
+        echo $this->templates->render('security', ['auth' => $this->auth, 'user' => $userInfo, 'flash' => $this->flash->display()]);
+
+        
+    }
+
+    public function status($id)
+    {
+        
+    }
     
 }

@@ -70,4 +70,66 @@ class Users
             $sth->execute($insert->getBindValues());
             
     }
+
+    public function editInfo($userId)
+    {
+        $update = $this->queryFactory->newUpdate();
+
+        $update
+            ->table('users_info')
+            ->cols([
+                'name',
+                'job_title',
+                'phone',
+                'address'
+            ])
+            ->where('user_id = :user_id')
+
+            ->bindValues([
+                'user_id' => $userId,
+                'name' => $_POST['name'],
+                'job_title' => $_POST['job_title'],
+                'phone' => $_POST['phone'],
+                'address' => $_POST['address'],
+            ]);
+
+            $sth = $this->pdo->prepare($update->getStatement());
+            
+            $sth->execute($update->getBindValues());
+
+    }
+
+    public function getOne($userId)
+    {
+        $select = $this->queryFactory->newSelect();
+        $select->cols(['*']);
+        $select
+        ->from('users_info')
+        ->where('user_id = :user_id')
+        ->bindValues(['user_id' => $userId]);
+
+        $sth = $this->pdo->prepare($select->getStatement());
+
+        $sth->execute($select->getBindValues());
+
+        return $sth->fetch(PDO::FETCH_ASSOC);
+         
+    }
+
+    public function getEmail($userId)
+    {
+        $select = $this->queryFactory->newSelect();
+        $select->cols(['*']);
+        $select
+        ->from('users')
+        ->where('id = :id')
+        ->bindValues(['id' => $userId]);
+
+        $sth = $this->pdo->prepare($select->getStatement());
+
+        $sth->execute($select->getBindValues());
+
+        return $sth->fetch(PDO::FETCH_ASSOC);
+         
+    }
 }
