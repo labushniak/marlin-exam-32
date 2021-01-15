@@ -31,15 +31,20 @@ $builder->addDefinitions([
 $containerDI = $builder->build();
 
 $dispatcher = FastRoute\simpleDispatcher (function(FastRoute\RouteCollector $r) {
-    $r->addRoute('GET', '/registration', ['App\Registration', 'index']);
-    $r->addRoute('POST', '/registration', ['App\Registration', 'index']);
+    $r->addRoute('GET', '/registration', ['App\Controllers\Registration', 'index']);
+    $r->addRoute('POST', '/registration', ['App\Controllers\Registration', 'index']);
 
-    $r->addRoute('GET', '/login', ['App\Login', 'index']);
-    $r->addRoute('POST', '/login', ['App\Login', 'index']);
+    $r->addRoute('GET', '/login', ['App\Controllers\Login', 'index']);
+    $r->addRoute('POST', '/login', ['App\Controllers\Login', 'index']);
 
-    $r->addRoute('GET', '/', ['App\Users', 'index']);
-    $r->addRoute('POST', '/', ['App\Users', 'index']);
+    $r->addRoute('GET', '/', ['App\Controllers\Users', 'index']);
+    $r->addRoute('POST', '/', ['App\Controllers\Users', 'index']);
     
+    $r->addRoute('GET', '/logout', ['App\Controllers\Users', 'logout']);
+
+    $r->addRoute('GET', '/create', ['App\Controllers\Users', 'create']);
+    $r->addRoute('POST', '/create', ['App\Controllers\Users', 'create']);
+
     $r->addRoute('GET', '/login/{id:\d+}', ['App\LoginController', 'printLogin', 'homepage']);
     $r->addRoute('GET', '/about', ['App\LoginController', 'printLogin', 'about']);
     $r->addRoute('GET', '/about/{id:\d+}', ['App\LoginController', 'printLogin', 'about']);

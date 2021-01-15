@@ -815,23 +815,23 @@
         },
         {
             "name": "tamtamchik/simple-flash",
-            "version": "2.0.0",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tamtamchik/simple-flash.git",
-                "reference": "43d6c5906d12d62ae5e354581bc06035be0abe8e"
+                "reference": "62fc3d59df2cc5bbd746af25f488b76585362c45"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tamtamchik/simple-flash/zipball/43d6c5906d12d62ae5e354581bc06035be0abe8e",
-                "reference": "43d6c5906d12d62ae5e354581bc06035be0abe8e",
+                "url": "https://api.github.com/repos/tamtamchik/simple-flash/zipball/62fc3d59df2cc5bbd746af25f488b76585362c45",
+                "reference": "62fc3d59df2cc5bbd746af25f488b76585362c45",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.4.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "4.*",
+                "phpunit/phpunit": "^8",
                 "scrutinizer/ocular": "1.*"
             },
             "type": "library",
@@ -870,7 +870,7 @@
                 "messages",
                 "notifications"
             ],
-            "time": "2020-03-11T17:39:16+00:00"
+            "time": "2020-12-28T10:04:47+00:00"
         },
         {
             "name": "vlucas/valitron",

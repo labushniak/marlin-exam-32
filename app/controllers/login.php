@@ -1,5 +1,5 @@
 <?php
-namespace App;
+namespace App\Controllers;
 
 use League\Plates\Engine;
 use Delight\Auth\Auth;
@@ -9,7 +9,7 @@ class Login
 {
     
     private $templates, $auth, $flash;
-    public function __construct(Engine $engine, Auth $auth, Flash $flash, Session $session)
+    public function __construct(Engine $engine, Auth $auth, Flash $flash)
     {
         $this->templates = $engine;
         $this->auth = $auth;
@@ -38,6 +38,7 @@ class Login
                 $this->flash->success('User is logged in');
                 
                 header('Location: /');
+                exit;
             }
             catch (\Delight\Auth\InvalidEmailException $e) {
                 $this->flash->warning('Wrong email address');

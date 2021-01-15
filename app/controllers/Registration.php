@@ -1,5 +1,5 @@
 <?php
-namespace App;
+namespace App\Controllers;
 
 use League\Plates\Engine;
 use Delight\Auth\Auth;
@@ -10,7 +10,7 @@ use \Tamtamchik\SimpleFlash\Flash;
 class Registration
 {
     private $templates, $auth, $flash;
-    public function __construct(Engine $engine, Auth $auth, Flash $flash, Session $session)
+    public function __construct(Engine $engine, Auth $auth, Flash $flash)
     {
         $this->templates = $engine;
         $this->auth = $auth;
