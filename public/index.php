@@ -55,13 +55,11 @@ $dispatcher = FastRoute\simpleDispatcher (function(FastRoute\RouteCollector $r) 
     $r->addRoute('GET', '/status/{id:\d+}', ['App\Controllers\Users', 'status']);
     $r->addRoute('POST', '/status/{id:\d+}', ['App\Controllers\Users', 'status']);
 
-    $r->addRoute('GET', '/login/{id:\d+}', ['App\LoginController', 'printLogin', 'homepage']);
-    $r->addRoute('GET', '/about', ['App\LoginController', 'printLogin', 'about']);
-    $r->addRoute('GET', '/about/{id:\d+}', ['App\LoginController', 'printLogin', 'about']);
-    // {id} must be a number (\d+)
-    $r->addRoute('GET', '/user/{id:\d+}', ['App\LoginController', 'printLogin']);
-    // The /{title} suffix is optional
-    $r->addRoute('GET', '/articles/{id:\d+}[/{title}]', 'get_article_handler');
+    $r->addRoute('GET', '/media/{id:\d+}', ['App\Controllers\Users', 'media']);
+    $r->addRoute('POST', '/media/{id:\d+}', ['App\Controllers\Users', 'media']);
+
+    $r->addRoute('GET', '/delete/{id:\d+}', ['App\Controllers\Users', 'delete']);
+
 });
 
 // Fetch method and URI from somewhere

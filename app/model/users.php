@@ -33,7 +33,28 @@ class Users
         return $result;
     }
 
-    public function setAvatar($user_id, $avatar)
+    public function getOneUser($id)
+    {
+        $select = $this->queryFactory->newSelect();
+        $select->cols(['*']);
+        $select
+        ->from('users')
+        ->from('users_info')
+        ->from('users_links')
+        ->where('users_info.user_id = :id')
+        ->where('users_links.user_id = :id')
+        ->bindValues([
+            'id' => $id,
+        ]);
+
+        $sth = $this->pdo->prepare($select->getStatement());
+
+        $sth->execute($select->getBindValues());
+
+        return $sth->fetch(PDO::FETCH_ASSOC);        
+    }
+
+    public function getAvatar($user_id, $avatar)
     {
         
             //директория загрузки
@@ -99,7 +120,7 @@ class Users
 
     }
 
-    public function getOne($userId)
+    public function getById($userId)
     {
         $select = $this->queryFactory->newSelect();
         $select->cols(['*']);
@@ -116,7 +137,7 @@ class Users
          
     }
 
-    public function getEmail($userId)
+    public function getEmailById($userId)
     {
         $select = $this->queryFactory->newSelect();
         $select->cols(['*']);
@@ -131,5 +152,78 @@ class Users
 
         return $sth->fetch(PDO::FETCH_ASSOC);
          
+    }
+
+    public function setStatus($id)
+    {
+        $update = $this->queryFactory->newUpdate();
+
+        $update
+            ->table('users_info')
+            ->cols([
+                'status'
+            ])
+            ->where('user_id = :user_id')
+
+            ->bindValues([
+                'user_id' => $id,
+                'status' => $_POST['status']                
+            ]);
+
+            $sth = $this->pdo->prepare($update->getStatement());
+            
+            $sth->execute($update->getBindValues());
+    }
+
+    public function updateAvatarById($table, $cols, $values)
+    {
+        $update = $this->queryFactory->newUpdate();
+
+        $update
+            ->table($table)
+            ->cols($cols)
+            ->where('user_id = :id')
+
+            ->bindValues($values);
+
+            $sth = $this->pdo->prepare($update->getStatement());
+            
+            $sth->execute($update->getBindValues());
+    }
+
+    public function delete($id)
+    {
+        //удаление пользователя из таблицы users_links
+        $delete = $this->queryFactory->newDelete();
+
+        $delete
+            ->from('users_links')
+            ->where('user_id = :id')
+            ->bindValue('id', $id);
+        
+            $sth = $this->pdo->prepare($delete->getStatement());
+            $sth->execute($delete->getBindValues());
+
+        //удаление пользователя из таблицы users_info
+            $delete = $this->queryFactory->newDelete();
+
+            $delete
+                ->from('users_info')
+                ->where('user_id = :id')
+                ->bindValue('id', $id);
+            
+            $sth = $this->pdo->prepare($delete->getStatement());
+            $sth->execute($delete->getBindValues());
+
+        //удаление пользователя из таблицы users
+        $delete = $this->queryFactory->newDelete();
+
+        $delete
+            ->from('users')
+            ->where('id = :id')
+            ->bindValue('id', $id);
+        
+        $sth = $this->pdo->prepare($delete->getStatement());
+        $sth->execute($delete->getBindValues());
     }
 }

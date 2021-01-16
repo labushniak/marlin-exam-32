@@ -44,6 +44,11 @@ class Users
 
     public function create()
     {
+        if(!$this->auth->hasRole(\Delight\Auth\Role::ADMIN)){
+            $this->flash->warning('Access denied');
+            header('Location: /');
+            exit;
+        }
         
         if (!$_POST['submit']){
         
@@ -87,7 +92,7 @@ class Users
                         'phone' => $_POST['phone'],
                         'address' => $_POST['address'],
                         'status' => $_POST['status'],
-                        'avatar' => $this->user->setAvatar($userId, $_FILES['avatar']),
+                        'avatar' => $this->user->getAvatar($userId, $_FILES['avatar']),
                     ]);
 
                     //добавляем данные в таблицу users_links
@@ -132,17 +137,29 @@ class Users
     public function edit($id)
     {
 
+        if(!($this->auth->getUserId() == $id || $this->auth->hasRole(\Delight\Auth\Role::ADMIN))){
+            $this->flash->warning('Access denied');
+            header('Location: /');
+            exit;
+        }
+        
         if($_POST['submit']){
             $this->user->editInfo($id);
         }
         
-        $userInfo = $this->user->getOne($id);
+        $userInfo = $this->user->getById($id);
         echo $this->templates->render('edit', ['auth' => $this->auth, 'user' => $userInfo]);
     }
 
     public function security($id)
     {
-        $userInfo = $this->user->getEmail($id);
+        if(!($this->auth->getUserId() == $id || $this->auth->hasRole(\Delight\Auth\Role::ADMIN))){
+            $this->flash->warning('Access denied');
+            header('Location: /');
+            exit;
+        }
+        
+        $userInfo = $this->user->getEmailById($id);
 
         if($_POST['submit']){
             try {
@@ -168,7 +185,76 @@ class Users
 
     public function status($id)
     {
+        if(!($this->auth->getUserId() == $id || $this->auth->hasRole(\Delight\Auth\Role::ADMIN))){
+            $this->flash->warning('Access denied');
+            header('Location: /');
+            exit;
+        }
+        
+        if($_POST['submit']){
+            $this->user->setStatus($id);
+        }
+        
+        $userInfo = $this->user->getOneUser($id);
+        
+        $statuses = [
+            'online' => 'Онлайн',
+            'dont_disturb' => 'Не беспокоить',
+            'out' => 'Отошел'
+        ];
+
+        echo $this->templates->render('status', ['auth' => $this->auth, 'user' => $userInfo, 'statuses'=> $statuses, 'flash' => $this->flash->display()]);
         
     }
     
+    public function media($id)
+    {
+        if(!($this->auth->getUserId() == $id || $this->auth->hasRole(\Delight\Auth\Role::ADMIN))){
+            $this->flash->warning('Access denied');
+            header('Location: /');
+            exit;
+        }
+
+        $userInfo = $this->user->getOneUser($id);
+        
+        if($_POST['submit']){
+            $this->user->updateAvatarById(
+                'users_info',
+                [
+                    'avatar'
+                ],
+                [
+                    'id' => $userInfo['user_id'],
+                    'avatar' => $this->user->getAvatar($userInfo['user_id'], $_FILES['avatar']),
+                ]
+            );
+            $userInfo = $this->user->getOneUser($id);
+        }
+
+        
+
+        echo $this->templates->render('media', ['auth' => $this->auth, 'user' => $userInfo, 'flash' => $this->flash->display()]);
+    }
+
+    public function delete($id)
+    {
+        if(!($this->auth->getUserId() == $id || $this->auth->hasRole(\Delight\Auth\Role::ADMIN))){
+            $this->flash->warning('Access denied');
+            header('Location: /');
+            exit;
+        }
+
+        $this->user->delete($id);
+        
+        if($this->auth->hasRole(\Delight\Auth\Role::ADMIN)){
+            $this->flash->success('User deleted');
+            header('Location: /');
+            exit;
+        } else {
+            $this->auth->logOut();
+            $this->flash->success('User deleted');
+            header('Location: /login');
+            exit;
+        }
+    }
 }
