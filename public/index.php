@@ -32,31 +32,30 @@ $builder->addDefinitions([
 $containerDI = $builder->build();
 
 $dispatcher = FastRoute\simpleDispatcher (function(FastRoute\RouteCollector $r) {
-    $r->addRoute('GET', '/registration', ['App\Controllers\Registration', 'index']);
-    $r->addRoute('POST', '/registration', ['App\Controllers\Registration', 'index']);
+    $r->addRoute('GET', '/registration', ['App\Controllers\Registration', 'showForm']);
+    $r->addRoute('POST', '/registration', ['App\Controllers\Registration', 'postHandler']);
 
-    $r->addRoute('GET', '/login', ['App\Controllers\Login', 'index']);
-    $r->addRoute('POST', '/login', ['App\Controllers\Login', 'index']);
+    $r->addRoute('GET', '/login', ['App\Controllers\Login', 'showForm']);
+    $r->addRoute('POST', '/login', ['App\Controllers\Login', 'postHandler']);
 
     $r->addRoute('GET', '/', ['App\Controllers\Users', 'index']);
-    $r->addRoute('POST', '/', ['App\Controllers\Users', 'index']);
     
     $r->addRoute('GET', '/logout', ['App\Controllers\Users', 'logout']);
 
-    $r->addRoute('GET', '/create', ['App\Controllers\Users', 'create']);
-    $r->addRoute('POST', '/create', ['App\Controllers\Users', 'create']);
+    $r->addRoute('GET', '/create', ['App\Controllers\Users', 'showFormCreate']);
+    $r->addRoute('POST', '/create', ['App\Controllers\Users', 'createPostHandler']);
 
-    $r->addRoute('GET', '/edit/{id:\d+}', ['App\Controllers\Users', 'edit']);
-    $r->addRoute('POST', '/edit/{id:\d+}', ['App\Controllers\Users', 'edit']);
+    $r->addRoute('GET', '/edit/{id:\d+}', ['App\Controllers\Users', 'editShowForm']);
+    $r->addRoute('POST', '/edit/{id:\d+}', ['App\Controllers\Users', 'editPostHandler']);
 
-    $r->addRoute('GET', '/security/{id:\d+}', ['App\Controllers\Users', 'security']);
-    $r->addRoute('POST', '/security/{id:\d+}', ['App\Controllers\Users', 'security']);
+    $r->addRoute('GET', '/security/{id:\d+}', ['App\Controllers\Users', 'securityShowForm']);
+    $r->addRoute('POST', '/security/{id:\d+}', ['App\Controllers\Users', 'securityPostHandler']);
 
-    $r->addRoute('GET', '/status/{id:\d+}', ['App\Controllers\Users', 'status']);
-    $r->addRoute('POST', '/status/{id:\d+}', ['App\Controllers\Users', 'status']);
+    $r->addRoute('GET', '/status/{id:\d+}', ['App\Controllers\Users', 'statusShowForm']);
+    $r->addRoute('POST', '/status/{id:\d+}', ['App\Controllers\Users', 'statusPostHandler']);
 
-    $r->addRoute('GET', '/media/{id:\d+}', ['App\Controllers\Users', 'media']);
-    $r->addRoute('POST', '/media/{id:\d+}', ['App\Controllers\Users', 'media']);
+    $r->addRoute('GET', '/media/{id:\d+}', ['App\Controllers\Users', 'mediaShowForm']);
+    $r->addRoute('POST', '/media/{id:\d+}', ['App\Controllers\Users', 'mediaPostHandler']);
 
     $r->addRoute('GET', '/delete/{id:\d+}', ['App\Controllers\Users', 'delete']);
 

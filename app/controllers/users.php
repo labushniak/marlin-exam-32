@@ -4,13 +4,13 @@ namespace App\Controllers;
 use League\Plates\Engine;
 use Delight\Auth\Auth;
 use \Tamtamchik\SimpleFlash\Flash;
-use App\Model\Users as usersData;
+use App\Model\Users as UsersData;
 
 
 class Users
 {
     private $templates;
-    public function __construct(Engine $engine, Auth $auth, Flash $flash, usersData $user)
+    public function __construct(Engine $engine, Auth $auth, Flash $flash, UsersData $user)
     {
         $this->templates = $engine;
         $this->auth = $auth;
@@ -42,35 +42,10 @@ class Users
         }
     }
 
-    public function create()
+    public function createPostHandler()
     {
-        if(!$this->auth->hasRole(\Delight\Auth\Role::ADMIN)){
-            $this->flash->warning('Access denied');
-            header('Location: /');
-            exit;
-        }
-        
-        if (!$_POST['submit']){
-        
-            if ($this->auth->isLoggedIn() || $this->auth->isRemembered()){
-                if ($this->auth->hasRole(\Delight\Auth\Role::ADMIN)) {
-                    echo $this->templates->render('create', ['auth' => $this->auth]);
-                    exit;
-                }else {
-                    $this->flash->warning('User is not admin');
-                    header('Location: /');
-                    exit;
-                }
-            } else {
-                $this->flash->warning('User is not logged in');
-                header('Location: /login');
-                
-            }
-        }else {
-            
-            try {
-                
-                $userId = $this->auth->register($_POST['email'], $_POST['password']);
+        try {
+            $userId = $this->auth->register($_POST['email'], $_POST['password']);
                 
                 if ($userId){//если userId создан, то добавляем остальные данные в таблицы
 
@@ -131,10 +106,42 @@ class Users
             }
         
             echo $this->templates->render('create', ['flash' => $this->flash->display(), 'auth' => $this->auth, 'name' => $_POST['name'], 'job_title' => $_POST['job_title'], 'phone' => $_POST['phone'], 'address' => $_POST['address'], 'status' => $_POST['status'], 'vk' => $_POST['vk'], 'telegram' => $_POST['telegram'], 'instagram' => $_POST['instagram'], 'email' => $_POST['email']]);
-        }
     }
 
-    public function edit($id)
+
+    public function showFormCreate()
+    {
+        if(!$this->auth->hasRole(\Delight\Auth\Role::ADMIN)){
+            $this->flash->warning('Access denied');
+            header('Location: /');
+            exit;
+        }
+
+        if ($this->auth->isLoggedIn() || $this->auth->isRemembered()){
+            if ($this->auth->hasRole(\Delight\Auth\Role::ADMIN)) {
+                echo $this->templates->render('create', ['auth' => $this->auth]);
+                exit;
+            }else {
+                $this->flash->warning('User is not admin');
+                header('Location: /');
+                exit;
+            }
+        } else {
+                $this->flash->warning('User is not logged in');
+                header('Location: /login');
+                
+        }
+       
+    }
+
+    public function editPostHandler($id)
+    {
+        $this->user->editInfo($id);
+        $userInfo = $this->user->getById($id);
+        echo $this->templates->render('edit', ['auth' => $this->auth, 'user' => $userInfo]);
+    }
+    
+    public function editShowForm($id)
     {
 
         if(!($this->auth->getUserId() == $id || $this->auth->hasRole(\Delight\Auth\Role::ADMIN))){
@@ -143,15 +150,32 @@ class Users
             exit;
         }
         
-        if($_POST['submit']){
-            $this->user->editInfo($id);
-        }
-        
         $userInfo = $this->user->getById($id);
         echo $this->templates->render('edit', ['auth' => $this->auth, 'user' => $userInfo]);
     }
 
-    public function security($id)
+    public function securityPostHandler($id)
+    {
+        try {
+            $this->auth->changePassword($_POST['oldPassword'], $_POST['newPassword']);
+        
+            $this->flash->success('Password has been changed');
+        }
+        catch (\Delight\Auth\NotLoggedInException $e) {
+            $this->flash->warning('Not logged in');
+        }
+        catch (\Delight\Auth\InvalidPasswordException $e) {
+            $this->flash->warning('Invalid password(s)');
+        }
+        catch (\Delight\Auth\TooManyRequestsException $e) {
+            $this->flash->warning('Too many requests');
+        }
+        
+        $userInfo = $this->user->getEmailById($id);
+        echo $this->templates->render('security', ['auth' => $this->auth, 'user' => $userInfo, 'flash' => $this->flash->display()]);
+    }
+
+    public function securityShowForm($id)
     {
         if(!($this->auth->getUserId() == $id || $this->auth->hasRole(\Delight\Auth\Role::ADMIN))){
             $this->flash->warning('Access denied');
@@ -160,41 +184,34 @@ class Users
         }
         
         $userInfo = $this->user->getEmailById($id);
-
-        if($_POST['submit']){
-            try {
-                $this->auth->changePassword($_POST['oldPassword'], $_POST['newPassword']);
-            
-                $this->flash->success('Password has been changed');
-            }
-            catch (\Delight\Auth\NotLoggedInException $e) {
-                $this->flash->warning('Not logged in');
-            }
-            catch (\Delight\Auth\InvalidPasswordException $e) {
-                $this->flash->warning('Invalid password(s)');
-            }
-            catch (\Delight\Auth\TooManyRequestsException $e) {
-                $this->flash->warning('Too many requests');
-            }
-        }
-                
         echo $this->templates->render('security', ['auth' => $this->auth, 'user' => $userInfo, 'flash' => $this->flash->display()]);
 
         
     }
 
-    public function status($id)
+    public function statusPostHandler($id)
+    {
+        $this->user->setStatus($id);
+        
+        $userInfo = $this->user->getOneUser($id);
+        
+        $statuses = [
+            'online' => 'Онлайн',
+            'dont_disturb' => 'Не беспокоить',
+            'out' => 'Отошел'
+        ];
+
+        echo $this->templates->render('status', ['auth' => $this->auth, 'user' => $userInfo, 'statuses'=> $statuses, 'flash' => $this->flash->display()]);
+    }
+
+    public function statusShowForm($id)
     {
         if(!($this->auth->getUserId() == $id || $this->auth->hasRole(\Delight\Auth\Role::ADMIN))){
             $this->flash->warning('Access denied');
             header('Location: /');
             exit;
         }
-        
-        if($_POST['submit']){
-            $this->user->setStatus($id);
-        }
-        
+
         $userInfo = $this->user->getOneUser($id);
         
         $statuses = [
@@ -207,7 +224,27 @@ class Users
         
     }
     
-    public function media($id)
+    public function mediaPostHandler($id)
+    {
+        $userInfo = $this->user->getOneUser($id);
+        
+        $this->user->updateAvatarById(
+            'users_info',
+            [
+                'avatar'
+            ],
+            [
+                'id' => $userInfo['user_id'],
+                'avatar' => $this->user->getAvatar($userInfo['user_id'], $_FILES['avatar']),
+            ]
+        );
+        
+        $userNewInfo = $this->user->getOneUser($id);
+
+        echo $this->templates->render('media', ['auth' => $this->auth, 'user' => $userNewInfo, 'flash' => $this->flash->display()]);
+    }
+
+    public function mediaShowForm($id)
     {
         if(!($this->auth->getUserId() == $id || $this->auth->hasRole(\Delight\Auth\Role::ADMIN))){
             $this->flash->warning('Access denied');
@@ -216,22 +253,6 @@ class Users
         }
 
         $userInfo = $this->user->getOneUser($id);
-        
-        if($_POST['submit']){
-            $this->user->updateAvatarById(
-                'users_info',
-                [
-                    'avatar'
-                ],
-                [
-                    'id' => $userInfo['user_id'],
-                    'avatar' => $this->user->getAvatar($userInfo['user_id'], $_FILES['avatar']),
-                ]
-            );
-            $userInfo = $this->user->getOneUser($id);
-        }
-
-        
 
         echo $this->templates->render('media', ['auth' => $this->auth, 'user' => $userInfo, 'flash' => $this->flash->display()]);
     }

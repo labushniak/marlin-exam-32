@@ -16,44 +16,45 @@ class Login
         $this->flash = $flash;        
     }
     
-    public function index ()
+    public function showForm()
     {
-        
+        echo $this->templates->render('login', ['flash' => $this->flash->display()]);
+    }
 
-        if($_POST['submit']){
-            
-            if ($_POST['remember'] == "on") {
-                // keep logged in for one year
-                $rememberDuration = (int) (60 * 60 * 24 * 365.25);
-            }
-            else {
-                // do not keep logged in after session ends
-                $rememberDuration = null;
-            }
-
-
-            try {
-                $this->auth->login($_POST['email'], $_POST['password'], $rememberDuration);
-            
-                $this->flash->success('User is logged in');
-                
-                header('Location: /');
-                exit;
-            }
-            catch (\Delight\Auth\InvalidEmailException $e) {
-                $this->flash->warning('Wrong email address');
-            }
-            catch (\Delight\Auth\InvalidPasswordException $e) {
-                $this->flash->warning('Wrong password');
-            }
-            catch (\Delight\Auth\EmailNotVerifiedException $e) {
-                $this->flash->warning('Email not verified');
-            }
-            catch (\Delight\Auth\TooManyRequestsException $e) {
-                $this->flash->warning('Too many requests');
-            }
+    public function postHandler()
+    {
+        if ($_POST['remember'] == "on") {
+            // keep logged in for one year
+            $rememberDuration = (int) (60 * 60 * 24 * 365.25);
         }
-            echo $this->templates->render('login', ['flash' => $this->flash->display()]);
+        else {
+            // do not keep logged in after session ends
+            $rememberDuration = null;
+        }
+
+
+        try {
+            $this->auth->login($_POST['email'], $_POST['password'], $rememberDuration);
+        
+            $this->flash->success('User is logged in');
+            
+            header('Location: /');
+            exit;
+        }
+        catch (\Delight\Auth\InvalidEmailException $e) {
+            $this->flash->warning('Wrong email address');
+        }
+        catch (\Delight\Auth\InvalidPasswordException $e) {
+            $this->flash->warning('Wrong password');
+        }
+        catch (\Delight\Auth\EmailNotVerifiedException $e) {
+            $this->flash->warning('Email not verified');
+        }
+        catch (\Delight\Auth\TooManyRequestsException $e) {
+            $this->flash->warning('Too many requests');
+        }
+    
+        echo $this->templates->render('login', ['flash' => $this->flash->display()]);
     }
     
 }

@@ -17,31 +17,32 @@ class Registration
         $this->flash = $flash;        
     }
 
-    
-    public function index()
+    public function showForm()
     {
+        echo $this->templates->render('registration', ['flash' => $this->flash->display()]);
+    }
+    
+    public function postHandler()
+    {
+        try {
+            $userId = $this->auth->register($_POST['email'], $_POST['password']);
         
-        if($_POST['submit']){
-            try {
-                $userId = $this->auth->register($_POST['email'], $_POST['password']);
-            
-                $this->flash->success('We have signed up a new user with the ID ' . $userId);
-                header('Location: /login');
-            }
-            catch (\Delight\Auth\InvalidEmailException $e) {
-                $this->flash->warning('Invalid email address');
-            }
-            catch (\Delight\Auth\InvalidPasswordException $e) {
-                $this->flash->warning('Invalid password');
-            }
-            catch (\Delight\Auth\UserAlreadyExistsException $e) {
-                $this->flash->warning('User already exists');
-            }
-            catch (\Delight\Auth\TooManyRequestsException $e) {
-                $this->flash->warning('Too many requests');
-            }
+            $this->flash->success('We have signed up a new user with the ID ' . $userId);
+            header('Location: /login');
         }
-        
+        catch (\Delight\Auth\InvalidEmailException $e) {
+            $this->flash->warning('Invalid email address');
+        }
+        catch (\Delight\Auth\InvalidPasswordException $e) {
+            $this->flash->warning('Invalid password');
+        }
+        catch (\Delight\Auth\UserAlreadyExistsException $e) {
+            $this->flash->warning('User already exists');
+        }
+        catch (\Delight\Auth\TooManyRequestsException $e) {
+            $this->flash->warning('Too many requests');
+        }
+
         echo $this->templates->render('registration', ['flash' => $this->flash->display()]);
             
     }
